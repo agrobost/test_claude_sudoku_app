@@ -1,6 +1,6 @@
 module.exports = {
   preset: 'jest-expo',
-  roots: ['<rootDir>/src'],
+  roots: ['<rootDir>/src', '<rootDir>/scripts'],
   testMatch: ['**/*.test.ts', '**/*.test.tsx'],
   clearMocks: true,
   collectCoverageFrom: ['src/engine/**/*.ts', '!src/engine/**/__tests__/**'],
