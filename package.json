@@ -10,7 +10,7 @@
     "check": "npm run typecheck && npm run lint && npm run test",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "test": "jest --passWithNoTests",
+    "test": "jest",
     "test:rls": "tsx scripts/rls-smoke.ts",
     "seed:puzzles": "tsx scripts/generate-puzzles/index.ts",
     "format": "prettier --write ."
