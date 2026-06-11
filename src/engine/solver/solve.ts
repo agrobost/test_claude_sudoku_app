@@ -122,13 +122,6 @@ export function solve(grid: Grid): SolveResult | null {
   const state = makeState(grid, 2);
   search(state);
   if (state.found === null) return null;
-  const solution: CellValue[] = [];
-  for (const value of state.found) {
-    const digit = DIGITS[value - 1];
-    if (digit === undefined) {
-      throw new Error(`Solver invariant violated: cell value ${value}`);
-    }
-    solution.push(digit);
-  }
+  const solution: CellValue[] = Array.from(state.found, (value) => DIGITS[value - 1]);
   return { solution, unique: state.count === 1 };
 }

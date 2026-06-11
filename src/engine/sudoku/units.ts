@@ -48,8 +48,15 @@ function range9(make: (i: number) => CellRef): readonly CellRef[] {
   return Array.from({ length: 9 }, (_, i) => make(i));
 }
 
-/** Les 27 unités : 9 lignes, 9 colonnes, 9 boîtes. */
+/** Les 27 unités : 9 lignes (0-8), 9 colonnes (9-17), 9 boîtes (18-26). */
 export const UNITS: readonly Unit[] = buildUnits();
+
+const UNIT_OFFSET: Record<UnitKind, number> = { row: 0, col: 9, box: 18 };
+
+/** Accès direct à une unité par nature et index (0..8). */
+export function unitAt(kind: UnitKind, index: number): Unit {
+  return UNITS[UNIT_OFFSET[kind] + index];
+}
 
 function buildPeers(): readonly (readonly CellRef[])[] {
   const peers: CellRef[][] = Array.from({ length: GRID_SIZE }, () => []);

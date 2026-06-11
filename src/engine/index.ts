@@ -27,3 +27,28 @@ export {
   withCell,
 } from './sudoku/grid';
 export { countSolutions, solve, type SolveResult } from './solver/solve';
+export {
+  ALL_CANDIDATES,
+  candidateCount,
+  computeCandidates,
+  digitsOfMask,
+  hasCandidate,
+  maskOfDigit,
+  type CandidateGrid,
+} from './candidates';
+export {
+  findClaiming,
+  findHiddenPair,
+  findHiddenSingle,
+  findNakedPair,
+  findNakedSingle,
+  findPointing,
+  TECHNIQUES,
+  type Elimination,
+  type Placement,
+  type TechniqueFinder,
+  type TechniqueHint,
+  type TechniqueId,
+} from './techniques';
+export { applyHintToCandidates, findHint, type Hint } from './hints/findHint';
+export { gradePuzzle, gradePuzzleString, type GradeResult, type MaxTechnique } from './grader';
