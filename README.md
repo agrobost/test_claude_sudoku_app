@@ -27,7 +27,7 @@ eas build --profile development --platform ios     # ou android
 ```bash
 supabase start         # stack locale (Docker requis)
 supabase db reset      # applique migrations + seed (grilles)
-npm run test:rls       # smoke tests RLS contre la stack locale
+SUPABASE_ANON_KEY=<clé affichée par `supabase status`> npm run test:rls
 ```
 
 ### Génération des grilles

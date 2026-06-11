@@ -1,0 +1,37 @@
+# Configuration de la stack Supabase locale (supabase start).
+# Le projet cloud doit refléter ces réglages (auth anonyme activée).
+
+project_id = "sudoku-app"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 17
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+site_url = "sudokuapp://"
+enable_signup = true
+# Sessions anonymes : parcours « jouer immédiatement » (cf. PRD)
+enable_anonymous_sign_ins = true
+
+[auth.email]
+# Pas de liaison par email en v1 (Apple/Google uniquement, cf. PRD hors scope)
+enable_signup = false
+
+[auth.rate_limit]
+# Limite les créations de sessions anonymes abusives
+anonymous_users = 30
+
+[functions.delete-account]
+verify_jwt = true

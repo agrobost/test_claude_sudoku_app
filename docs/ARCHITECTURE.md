@@ -52,7 +52,10 @@ Principes :
 | Réseau | @react-native-community/netinfo | Déclencheur de la sync outbox |
 | Tests | Jest (preset jest-expo) | E2E hors scope v1 |
 
-## 3. Schéma SQL Supabase (migration `0001_init.sql`)
+## 3. Schéma SQL Supabase
+
+> Source de vérité : `supabase/migrations/20260611000000_init.sql` (extraits ci-dessous synchronisés).
+> Validation : `npm run test:rls` contre la stack locale (`supabase start` + `supabase db reset`).
 
 ```sql
 -- ============ Types ============
@@ -155,18 +158,20 @@ create policy "games_insert_own" on public.games
 ### Fonctions RPC
 
 ```sql
--- Percentile du daily : « plus rapide que X % des joueurs ».
+-- Percentile du daily : « plus rapide que X % des joueurs » (premières victoires).
 -- SECURITY DEFINER : agrège les parties des AUTRES sans exposer leurs lignes (RLS).
+-- Le champ de comparaison exclut l'appelant et les durées < 30 s (anti-bruit).
 create function public.get_daily_percentile(p_date date)
-returns numeric language sql stable security definer set search_path = public as $$
+returns numeric language sql stable security definer set search_path = '' as $$
   with mine as (
     select duration_ms from public.games
     where user_id = (select auth.uid()) and daily_date = p_date and result = 'won'
   ),
   field as (
-    select duration_ms from public.games
-    where daily_date = p_date and result = 'won'
-      and duration_ms >= 30000              -- anti-bruit : victoires < 30 s exclues
+    select g.duration_ms from public.games g
+    where g.daily_date = p_date and g.result = 'won'
+      and g.duration_ms >= 30000
+      and g.user_id <> (select auth.uid())
   )
   select case
     when not exists (select 1 from mine) then null
@@ -179,7 +184,7 @@ $$;
 -- Recharge du cache local : grilles jamais jouées par l'appelant, hors grilles réservées au daily.
 -- SECURITY INVOKER : la RLS s'applique (puzzles lisibles, games limitées aux siennes).
 create function public.fetch_unplayed_puzzles(p_difficulty public.difficulty, p_count int default 20)
-returns setof public.puzzles language sql stable as $$
+returns setof public.puzzles language sql stable set search_path = '' as $$
   select p.* from public.puzzles p
   where p.difficulty = p_difficulty
     and not exists (select 1 from public.daily_puzzles d where d.puzzle_id = p.id)
@@ -307,17 +312,24 @@ parseGrid(s: string): Grid                       // 81 chars, '0' = vide
 serializeGrid(g: Grid): string
 findConflicts(g: Grid): CellRef[]                // contraintes ligne/colonne/boîte
 isSolved(g: Grid): boolean
-solve(g: Grid): { solution: Grid; unique: boolean } | null   // backtracking + comptage
-findHint(g: Grid, notes: Notes): Hint            // { technique, cells, digits, i18nKey }
+solve(g: Grid): { solution: Grid; unique: boolean } | null   // backtracking MRV + comptage
+computeCandidates(g: Grid): CandidateGrid        // bitmasks de candidats par case
+findHint(g: Grid, solution: Grid, candidates?: CandidateGrid): Hint | null
+  // Hint = wrongCell | technique { cells, digits, unit, placement, eliminations } | revealCell
+applyHintToCandidates(c: CandidateGrid, h: Hint): CandidateGrid  // chaînage des éliminations
+gradePuzzle(givens: Grid): { difficulty, maxTechnique } | null   // null si solution non unique
 ```
 
+- **Ordre d'un indice** : 1) saisie contraire à la solution → `wrongCell` ;
+  2) techniques humaines ; 3) `revealCell` (fallback assumé, surtout en expert).
 - **Techniques v1** (ordre d'essai) : naked single → hidden single → naked pair
-  → hidden pair → pointing pair → claiming. Si aucune ne s'applique :
-  `revealCell` (fallback assumé, surtout en expert).
-- **Grader** (côté script, même moteur) : résout en n'utilisant que les
-  techniques humaines ; la difficulté = la technique la plus dure requise
-  (easy : singles · medium : + pairs · hard : + pointing/claiming · expert :
-  nécessite plus → résolu par backtracking, indices via fallback).
+  → hidden pair → pointing (box→ligne) → claiming (ligne→box).
+- **Grader** (même moteur, utilisé par le script et les tests) : résout en
+  n'utilisant que les techniques humaines ; la difficulté = la technique la plus
+  dure requise (easy : singles · medium : + pairs · hard : + pointing/claiming ·
+  expert : nécessite plus → résolu par backtracking, indices via fallback).
+  `maxTechnique` ∈ TechniqueId ∪ {'backtracking', 'none'} — colonne
+  `puzzles.max_technique`.
 - L'erreur de saisie est jugée **contre la solution stockée** (pas seulement les
   conflits visibles), conformément au PRD.
 
@@ -329,9 +341,11 @@ findHint(g: Grid, notes: Notes): Hint            // { technique, cells, digits, 
   (reset minuit local), `gates.ts` (cap interstitiels, grace period, premium),
   réducteur outbox (idempotence, retries). Seuil de couverture **90 % sur
   `src/engine` et `features/*/logic`**, bloquant en CI.
-- **Intégration légère** : RPC et RLS vérifiées par script supabase-js avec deux
-  users de test (A ne lit pas les games de B ; daily futur invisible) sur la
-  stack locale `supabase start`.
+- **Intégration légère** : RPC et RLS vérifiées par `npm run test:rls`
+  (`scripts/rls-smoke.ts`, supabase-js) avec deux users anonymes réels — isolation
+  des games/profiles, daily futur invisible, journal immuable, idempotence du
+  re-sync — contre la stack locale (`supabase start` + `supabase db reset`,
+  `SUPABASE_ANON_KEY` requis).
 - **Hors scope v1** : tests UI de composants et E2E (Maestro envisagé v1.1).
   La recette manuelle suit la checklist du PRD §9.
 
