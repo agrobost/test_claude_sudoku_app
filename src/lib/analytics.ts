@@ -21,7 +21,8 @@ export type AnalyticsEvent =
   | { name: 'hint_used'; params: { technique: string } }
   | { name: 'ad_shown'; params: { format: 'banner' | 'interstitial' | 'rewarded' } }
   | { name: 'purchase_no_ads'; params: { restored: boolean } }
-  | { name: 'consent_changed'; params: { analytics_granted: boolean } };
+  | { name: 'consent_changed'; params: { analytics_granted: boolean } }
+  | { name: 'debug_ping'; params: { at: string } };
 
 type FirebaseHandles = {
   logEvent: (name: string, params: Record<string, unknown>) => Promise<unknown>;
@@ -29,6 +30,7 @@ type FirebaseHandles = {
   setCrashlyticsEnabled: (enabled: boolean) => Promise<unknown>;
   recordError: (error: Error) => void;
   crashLog: (message: string) => void;
+  crashApp: () => void;
 };
 
 let handles: FirebaseHandles | null = null;
@@ -53,6 +55,7 @@ function loadFirebase(): FirebaseHandles | null {
         crashlyticsModule.setCrashlyticsCollectionEnabled(crashlytics, enabled),
       recordError: (error) => crashlyticsModule.recordError(crashlytics, error),
       crashLog: (message) => crashlyticsModule.log(crashlytics, message),
+      crashApp: () => crashlyticsModule.crash(crashlytics),
     };
   } catch {
     // Firebase absent du build (pas de google-services) : analytics désactivée
@@ -88,4 +91,31 @@ export function trackEvent(event: AnalyticsEvent): void {
   handles.logEvent(event.name, event.params).catch((error: unknown) => {
     logger.warn(`trackEvent ${event.name} a échoué`, error);
   });
+}
+
+/** L'app Firebase est-elle embarquée dans ce build (google-services présent) ? */
+export function firebaseAvailable(): boolean {
+  if (handles === null) handles = loadFirebase();
+  return handles !== null;
+}
+
+/** La collecte est-elle effectivement active (consentement ET Firebase) ? */
+export function analyticsActive(): boolean {
+  return consentGranted && handles !== null;
+}
+
+/** DEBUG : crash natif volontaire pour vérifier la chaîne Crashlytics. */
+export function debugForceCrash(): boolean {
+  if (handles === null) handles = loadFirebase();
+  if (handles === null) return false;
+  handles.crashApp();
+  return true;
+}
+
+/** DEBUG : erreur non-fatale de test (visible dans Crashlytics si consenti). */
+export function debugRecordTestError(): boolean {
+  if (handles === null) handles = loadFirebase();
+  if (handles === null) return false;
+  handles.recordError(new Error('debug: test non-fatal error'));
+  return true;
 }

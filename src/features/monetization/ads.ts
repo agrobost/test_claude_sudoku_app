@@ -101,6 +101,24 @@ export async function maybeShowInterstitialAfterGame(): Promise<void> {
   });
 }
 
+export type DebugInterstitialOutcome = 'shown' | 'notReady' | 'unconfigured';
+
+/**
+ * DEBUG : affiche l'interstitiel en ignorant les règles produit (gates) et
+ * sans toucher aux compteurs (cap 3 min, parties jouées). Jamais appelé en jeu.
+ */
+export async function debugShowInterstitial(): Promise<DebugInterstitialOutcome> {
+  if (!sdkReady || INTERSTITIAL_AD_UNIT_ID === null) return 'unconfigured';
+  const interstitialId = INTERSTITIAL_AD_UNIT_ID;
+  const ready = await InterstitialAd.isAdReady(interstitialId).catch(() => false);
+  if (!ready) {
+    InterstitialAd.loadAd(interstitialId);
+    return 'notReady';
+  }
+  InterstitialAd.showAd(interstitialId);
+  return 'shown';
+}
+
 export type RewardedOutcome = 'earned' | 'dismissed' | 'unavailable';
 
 /** Affiche une rewarded ; 'earned' seulement si la récompense est accordée. */

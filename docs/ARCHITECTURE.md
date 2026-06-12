@@ -273,6 +273,9 @@ src/
                           #   de cap/fréquence), hintQuota.ts (3/jour, date locale)
     consent/              # orchestration ATT → CMP → init SDKs
     notifications/        # scheduling local (rappel daily, alerte streak)
+    debug/                # menu debug DEV ONLY (__DEV__ ou EXPO_PUBLIC_DEBUG_MENU=1) :
+                          #   forcer pubs/indices/victoire, seeds, notifications de test
+
   lib/                    # supabase.ts, mmkv.ts, i18n.ts, analytics.ts (façade typée), dates.ts
   components/             # primitives UI partagées (Button, Sheet, …)
   theme/                  # tokens (couleurs, espacements, typo), clair/sombre

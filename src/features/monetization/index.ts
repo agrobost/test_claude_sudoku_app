@@ -4,7 +4,14 @@ import { initAds } from './ads';
 import { initIap } from './iap';
 import { useMonetizationStore } from './store';
 
-export { adsReady, initAds, maybeShowInterstitialAfterGame, showRewardedAd } from './ads';
+export {
+  adsReady,
+  debugShowInterstitial,
+  initAds,
+  maybeShowInterstitialAfterGame,
+  showRewardedAd,
+  type DebugInterstitialOutcome,
+} from './ads';
 export { AdBanner } from './components/AdBanner';
 export { HintButton } from './components/HintButton';
 export { ReviveButton } from './components/ReviveButton';

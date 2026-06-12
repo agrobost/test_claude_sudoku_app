@@ -8,7 +8,11 @@ import { computeNotificationPlan } from './logic';
 import { applyNotificationPlan } from './scheduler';
 
 export { computeNotificationPlan, STREAK_ALERT_HOUR, type NotificationPlan } from './logic';
-export { requestNotificationPermission } from './scheduler';
+export {
+  listScheduledNotifications,
+  requestNotificationPermission,
+  sendTestNotification,
+} from './scheduler';
 
 /** Recalcule et reprogramme les notifications selon l'état courant. */
 export function refreshNotifications(): void {

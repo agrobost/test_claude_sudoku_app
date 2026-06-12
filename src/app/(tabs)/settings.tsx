@@ -15,6 +15,7 @@ import {
   type LinkProvider,
 } from '@/features/auth';
 import { setAnalyticsConsent, useConsentStore } from '@/features/consent';
+import { debugMenuEnabled } from '@/features/debug';
 import { useGameStore } from '@/features/game';
 import { useHistoryStore } from '@/features/history';
 import { restorePurchases, useMonetizationStore } from '@/features/monetization';
@@ -306,6 +307,12 @@ export default function SettingsScreen() {
             disabled={busy}
           />
         </Section>
+
+        {debugMenuEnabled ? (
+          <Section title={t('debug.title')}>
+            <Row icon="bug-outline" label={t('debug.entry')} onPress={() => router.push('/debug')} />
+          </Section>
+        ) : null}
       </ScrollView>
     </SafeAreaView>
   );

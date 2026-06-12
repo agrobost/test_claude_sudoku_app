@@ -26,6 +26,41 @@ async function ensureAndroidChannel(): Promise<void> {
   });
 }
 
+/** DEBUG : notification one-shot dans `seconds` secondes (canal Android géré). */
+export async function sendTestNotification(seconds: number): Promise<void> {
+  try {
+    await ensureAndroidChannel();
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: i18n.t('debug.notifications.testTitle'),
+        body: i18n.t('debug.notifications.testBody'),
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+        seconds,
+        channelId: CHANNEL_ID,
+      },
+    });
+  } catch (error) {
+    logger.warn('notification de test impossible', error);
+  }
+}
+
+/** DEBUG : description lisible des notifications actuellement programmées. */
+export async function listScheduledNotifications(): Promise<readonly string[]> {
+  try {
+    const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+    return scheduled.map((request) => {
+      const title = request.content.title ?? request.identifier;
+      const trigger = request.trigger === null ? 'immediate' : JSON.stringify(request.trigger);
+      return `${title}\n${trigger}`;
+    });
+  } catch (error) {
+    logger.warn('lecture des notifications programmées impossible', error);
+    return [];
+  }
+}
+
 /** Reprogramme tout : annule puis applique le plan calculé (idempotent). */
 export async function applyNotificationPlan(plan: NotificationPlan): Promise<void> {
   try {

@@ -48,6 +48,11 @@ export function formatHumanDate(date: LocalDate, locale: string): string {
   });
 }
 
+/** Instant ISO de midi LOCAL d'une date donnée (seeds de test, debug). */
+export function localNoonIso(date: LocalDate): string {
+  return new Date(`${date}T12:00:00`).toISOString();
+}
+
 /** Horodatage courant (ms) — centralisé pour rester mockable en test. */
 export function nowMs(): number {
   return Date.now();
