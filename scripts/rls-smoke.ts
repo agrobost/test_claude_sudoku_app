@@ -131,11 +131,12 @@ async function main(): Promise<void> {
   const aReads = await a.client.from('games').select('id');
   check('A voit sa partie', aReads.data?.length === 1, aReads);
 
-  // journal immuable : update/delete sans politique → 0 ligne affectée
+  // journal immuable : ni privilège UPDATE/DELETE ni politique → 42501 garanti
+  // (refus au niveau privilège, plus strict que le filtrage silencieux de la RLS)
   const update = await a.client.from('games').update({ duration_ms: 1 }).eq('id', gameId).select();
-  check('update refusé silencieusement (0 ligne)', update.data?.length === 0, update);
+  check('update refusé au niveau privilège (42501)', update.error?.code === '42501', update.error);
   const remove = await a.client.from('games').delete().eq('id', gameId).select();
-  check('delete refusé silencieusement (0 ligne)', remove.data?.length === 0, remove);
+  check('delete refusé au niveau privilège (42501)', remove.error?.code === '42501', remove.error);
 
   // percentile : null sans victoire daily, numérique ensuite
   const noWin = await a.client.rpc('get_daily_percentile', { p_date: today });
