@@ -128,6 +128,15 @@ et `games` est en insertion seule (journal immuable ; l'effacement passe par la
 suppression de compte → cascade).
 
 ```sql
+-- GRANTS explicites (on ne dépend pas de l'auto-grant des default privileges
+-- Supabase, variable selon la version de la CLI). La RLS filtre PAR-DESSUS.
+-- games sans UPDATE/DELETE : append-only renforcé au niveau privilège.
+grant usage on schema public to authenticated;
+grant select         on public.puzzles       to authenticated;
+grant select         on public.daily_puzzles to authenticated;
+grant select         on public.profiles      to authenticated;
+grant select, insert on public.games         to authenticated;
+
 alter table public.puzzles       enable row level security;
 alter table public.daily_puzzles enable row level security;
 alter table public.profiles      enable row level security;

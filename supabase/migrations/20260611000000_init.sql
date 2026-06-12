@@ -67,6 +67,18 @@ create unique index games_one_daily_win_uq
   on public.games (user_id, daily_date)
   where daily_date is not null and result = 'won';
 
+-- ============ GRANTS : privilèges de table pour le rôle authenticated ============
+-- Explicites (on ne dépend PAS de l'auto-grant des default privileges Supabase,
+-- qui varie selon la version de la CLI / le rôle créateur de la migration).
+-- Les sessions anonymes ont le rôle `authenticated` ; `anon` (sans session) n'a
+-- aucun accès à ces tables. La RLS ci-dessous filtre les lignes PAR-DESSUS ces grants.
+-- games volontairement sans UPDATE/DELETE : le journal est append-only.
+grant usage on schema public to authenticated;
+grant select         on public.puzzles       to authenticated;
+grant select         on public.daily_puzzles to authenticated;
+grant select         on public.profiles      to authenticated;
+grant select, insert on public.games         to authenticated;
+
 -- ============ RLS : activée PARTOUT, default deny ============
 alter table public.puzzles       enable row level security;
 alter table public.daily_puzzles enable row level security;
