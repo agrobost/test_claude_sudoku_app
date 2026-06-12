@@ -106,6 +106,59 @@ export const fr = {
       body: 'Sudoku — version {{version}}.\n\nUn sudoku épuré : défi quotidien, indices qui expliquent la technique, jouable hors connexion.\n\nDéveloppé avec Expo / React Native et Supabase.',
     },
   },
+  hints: {
+    button: 'Indice',
+    apply: 'Appliquer',
+    close: 'Fermer',
+    digitsSeparator: ' et ',
+    noneLeftTitle: 'Plus d’indice gratuit',
+    rewardedOffer: 'Regarde une courte vidéo pour débloquer un indice supplémentaire.',
+    rewardedConfirm: 'Regarder la vidéo',
+    rewardedUnavailable: 'Aucune vidéo disponible pour le moment. Réessaie dans un instant.',
+    noneLeftNoAds: 'Tu as utilisé tes 3 indices du jour. Ils reviennent demain !',
+    unit: {
+      row: 'la ligne {{index}}',
+      col: 'la colonne {{index}}',
+      box: 'le bloc {{index}}',
+    },
+    wrongCell: {
+      title: 'Une case contredit la solution',
+      body: 'La case {{cell}} contient un chiffre erroné. Corrige-la avant de continuer.',
+    },
+    revealCell: {
+      title: 'Coup de pouce',
+      body: 'Aucune technique simple ne s’applique ici. La case {{cell}} vaut {{digit}}.',
+    },
+    nakedSingle: {
+      title: 'Candidat unique',
+      body: 'Dans la case {{cells}}, un seul chiffre reste possible : {{digits}}. Toutes les autres valeurs sont déjà prises par sa ligne, sa colonne ou son bloc.',
+    },
+    hiddenSingle: {
+      title: 'Single caché',
+      body: 'Dans {{unit}}, le chiffre {{digits}} n’a plus qu’une seule case possible : {{cells}}.',
+    },
+    nakedPair: {
+      title: 'Paire nue',
+      body: 'Dans {{unit}}, les cases {{cells}} ne peuvent contenir que {{digits}}. Ces deux chiffres se réservent ces deux cases : élimine-les des autres cases de {{unit}}.',
+    },
+    hiddenPair: {
+      title: 'Paire cachée',
+      body: 'Dans {{unit}}, les chiffres {{digits}} ne peuvent aller que dans les cases {{cells}}. Ces cases ne contiendront rien d’autre : élimine leurs autres candidats.',
+    },
+    pointing: {
+      title: 'Paire pointante',
+      body: 'Dans {{unit}}, le chiffre {{digits}} ne peut apparaître que dans les cases {{cells}}, toutes alignées. Il s’élimine donc du reste de leur ligne/colonne.',
+    },
+    claiming: {
+      title: 'Réduction de bloc',
+      body: 'Sur {{unit}}, le chiffre {{digits}} est confiné aux cases {{cells}}, toutes dans le même bloc. Il s’élimine donc du reste de ce bloc.',
+    },
+  },
+  revive: {
+    button: 'Continuer (vidéo)',
+    unavailableTitle: 'Vidéo indisponible',
+    unavailableMessage: 'Réessaie dans un instant, ou abandonne la partie.',
+  },
   stats: {
     played: 'Parties',
     won: 'Victoires',

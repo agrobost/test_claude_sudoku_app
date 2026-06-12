@@ -109,6 +109,59 @@ export const en: typeof fr = {
       body: 'Sudoku — version {{version}}.\n\nA clean sudoku: daily challenge, hints that teach the technique, fully playable offline.\n\nBuilt with Expo / React Native and Supabase.',
     },
   },
+  hints: {
+    button: 'Hint',
+    apply: 'Apply',
+    close: 'Close',
+    digitsSeparator: ' and ',
+    noneLeftTitle: 'No free hints left',
+    rewardedOffer: 'Watch a short video to unlock one more hint.',
+    rewardedConfirm: 'Watch the video',
+    rewardedUnavailable: 'No video available right now. Try again in a moment.',
+    noneLeftNoAds: 'You used your 3 daily hints. They come back tomorrow!',
+    unit: {
+      row: 'row {{index}}',
+      col: 'column {{index}}',
+      box: 'block {{index}}',
+    },
+    wrongCell: {
+      title: 'A cell contradicts the solution',
+      body: 'Cell {{cell}} holds a wrong digit. Fix it before going further.',
+    },
+    revealCell: {
+      title: 'A little nudge',
+      body: 'No simple technique applies here. Cell {{cell}} is {{digit}}.',
+    },
+    nakedSingle: {
+      title: 'Naked single',
+      body: 'In cell {{cells}}, only one digit remains possible: {{digits}}. Every other value is already taken by its row, column or block.',
+    },
+    hiddenSingle: {
+      title: 'Hidden single',
+      body: 'In {{unit}}, digit {{digits}} has only one possible cell left: {{cells}}.',
+    },
+    nakedPair: {
+      title: 'Naked pair',
+      body: 'In {{unit}}, cells {{cells}} can only contain {{digits}}. Those two digits claim those two cells: eliminate them from the rest of {{unit}}.',
+    },
+    hiddenPair: {
+      title: 'Hidden pair',
+      body: 'In {{unit}}, digits {{digits}} can only go in cells {{cells}}. Those cells will hold nothing else: eliminate their other candidates.',
+    },
+    pointing: {
+      title: 'Pointing pair',
+      body: 'In {{unit}}, digit {{digits}} can only appear in cells {{cells}}, all aligned. It can therefore be eliminated from the rest of their row/column.',
+    },
+    claiming: {
+      title: 'Block reduction',
+      body: 'On {{unit}}, digit {{digits}} is confined to cells {{cells}}, all in the same block. It can therefore be eliminated from the rest of that block.',
+    },
+  },
+  revive: {
+    button: 'Continue (video)',
+    unavailableTitle: 'Video unavailable',
+    unavailableMessage: 'Try again in a moment, or abandon the game.',
+  },
   stats: {
     played: 'Games',
     won: 'Wins',

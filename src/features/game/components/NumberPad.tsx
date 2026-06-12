@@ -39,7 +39,12 @@ function ActionButton({ icon, label, active = false, onPress }: ActionProps) {
   );
 }
 
-export function NumberPad() {
+type Props = {
+  /** Emplacement du bouton indice (fourni par l'écran : accès + quota = monétisation). */
+  hintSlot?: React.ReactNode;
+};
+
+export function NumberPad({ hintSlot }: Props) {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const cells = useGameStore((s) => s.game?.play.cells);
@@ -84,6 +89,7 @@ export function NumberPad() {
           active={notesMode}
           onPress={toggleNotesMode}
         />
+        {hintSlot}
       </View>
     </View>
   );

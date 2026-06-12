@@ -1,6 +1,7 @@
 export { Board } from './components/Board';
 export { GameClock } from './components/GameClock';
 export { GameOverOverlay } from './components/GameOverOverlay';
+export { HintPanel } from './components/HintPanel';
 export { NumberPad } from './components/NumberPad';
 export { MAX_MISTAKES } from './logic';
 export {

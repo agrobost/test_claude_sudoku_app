@@ -2,7 +2,18 @@ import { randomUUID } from 'expo-crypto';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { parseGrid, type CellRef, type Difficulty, type Digit, type Grid } from '@/engine';
+import {
+  applyHintToCandidates,
+  computeCandidates,
+  findHint,
+  parseGrid,
+  type CandidateGrid,
+  type CellRef,
+  type Difficulty,
+  type Digit,
+  type Grid,
+  type Hint,
+} from '@/engine';
 import { trackEvent } from '@/lib/analytics';
 import { nowMs } from '@/lib/dates';
 import { zustandStorage } from '@/lib/mmkv';
@@ -44,6 +55,10 @@ export type ActiveGame = {
 
 type GameStore = {
   readonly game: ActiveGame | null;
+  /** Indice affiché (transient : jamais persisté, invalidé par toute saisie). */
+  readonly hint: Hint | null;
+  /** Candidats chaînés entre indices d'élimination successifs. */
+  readonly hintCandidates: CandidateGrid | null;
   startGame: (puzzle: PuzzleSpec, mode: GameMode, dailyDate: string | null) => void;
   selectCell: (cell: CellRef | null) => void;
   toggleNotesMode: () => void;
@@ -56,9 +71,11 @@ type GameStore = {
   abandonGame: () => void;
   /** Décrémente le compteur après un « continuer » (rewarded, E14). */
   reviveAfterDefeat: () => void;
-  registerHintUsed: () => void;
-  applyHintPlacement: (cell: CellRef, digit: Digit) => InputOutcome;
-  clearHintWrongCell: (cell: CellRef) => void;
+  /** Calcule et affiche l'indice pédagogique suivant (compte un indice utilisé). */
+  requestHint: () => Hint | null;
+  /** Applique l'indice affiché (placement, correction ou éliminations). */
+  applyCurrentHint: () => void;
+  dismissHint: () => void;
   clearGame: () => void;
 };
 
@@ -95,10 +112,14 @@ export const useGameStore = create<GameStore>()(
 
       return {
         game: null,
+        hint: null,
+        hintCandidates: null,
 
         startGame: (puzzle, mode, dailyDate) => {
           trackEvent({ name: 'game_start', params: { mode, difficulty: puzzle.difficulty } });
           set({
+            hint: null,
+            hintCandidates: null,
             game: {
               gameId: randomUUID(),
               puzzle,
@@ -136,21 +157,23 @@ export const useGameStore = create<GameStore>()(
           if (outcome === 'won' || outcome === 'lost') {
             next = finalize(next, outcome === 'won' ? 'won' : 'lost');
           }
-          set({ game: next });
+          // toute saisie manuelle invalide l'indice affiché et la chaîne de candidats
+          set({ game: next, hint: null, hintCandidates: null });
           return outcome;
         },
 
-        erase: () =>
-          withGame((game) => {
-            if (game.status !== 'playing' || game.selectedCell === null) return game;
-            const { state } = applyErase(game.play, game.selectedCell, parsedGivens(game));
-            return { ...game, play: state };
-          }),
+        erase: () => {
+          const { game } = get();
+          if (game === null || game.status !== 'playing' || game.selectedCell === null) return;
+          const { state } = applyErase(game.play, game.selectedCell, parsedGivens(game));
+          set({ game: { ...game, play: state }, hint: null, hintCandidates: null });
+        },
 
-        undo: () =>
-          withGame((game) =>
-            game.status === 'playing' ? { ...game, play: applyUndo(game.play) } : game,
-          ),
+        undo: () => {
+          const { game } = get();
+          if (game === null || game.status !== 'playing') return;
+          set({ game: { ...game, play: applyUndo(game.play) }, hint: null, hintCandidates: null });
+        },
 
         pauseTimer: () =>
           withGame((game) =>
@@ -182,32 +205,57 @@ export const useGameStore = create<GameStore>()(
               : game,
           ),
 
-        registerHintUsed: () => withGame((game) => ({ ...game, hintsUsed: game.hintsUsed + 1 })),
-
-        applyHintPlacement: (cell, digit) => {
-          const { game } = get();
-          if (game === null || game.status !== 'playing') return 'noop';
-          const { state, outcome } = applyInput(game.play, {
-            cell,
-            digit,
-            notesMode: false,
-            givens: parsedGivens(game),
-            solution: parsedSolution(game),
+        requestHint: () => {
+          const { game, hintCandidates } = get();
+          if (game === null || game.status !== 'playing') return null;
+          const hint = findHint(game.play.cells, parsedSolution(game), hintCandidates ?? undefined);
+          if (hint === null) return null;
+          trackEvent({
+            name: 'hint_used',
+            params: { technique: hint.kind === 'technique' ? hint.technique : hint.kind },
           });
-          let next: ActiveGame = { ...game, play: state, selectedCell: cell };
-          if (outcome === 'won') next = finalize(next, 'won');
-          set({ game: next });
-          return outcome;
+          set({ hint, game: { ...game, hintsUsed: game.hintsUsed + 1 } });
+          return hint;
         },
 
-        clearHintWrongCell: (cell) =>
-          withGame((game) => {
-            if (game.status !== 'playing') return game;
-            const { state } = applyErase(game.play, cell, parsedGivens(game));
-            return { ...game, play: state, selectedCell: cell };
-          }),
+        applyCurrentHint: () => {
+          const { game, hint, hintCandidates } = get();
+          if (game === null || hint === null || game.status !== 'playing') return;
 
-        clearGame: () => set({ game: null }),
+          if (hint.kind === 'wrongCell') {
+            const { state } = applyErase(game.play, hint.cell, parsedGivens(game));
+            set({
+              game: { ...game, play: state, selectedCell: hint.cell },
+              hint: null,
+              hintCandidates: null,
+            });
+            return;
+          }
+
+          const placement =
+            hint.kind === 'revealCell' ? { cell: hint.cell, digit: hint.digit } : hint.placement;
+          if (placement !== null) {
+            const { state, outcome } = applyInput(game.play, {
+              cell: placement.cell,
+              digit: placement.digit,
+              notesMode: false,
+              givens: parsedGivens(game),
+              solution: parsedSolution(game),
+            });
+            let next: ActiveGame = { ...game, play: state, selectedCell: placement.cell };
+            if (outcome === 'won') next = finalize(next, 'won');
+            set({ game: next, hint: null, hintCandidates: null });
+            return;
+          }
+
+          // éliminations seules : on chaîne les candidats pour l'indice suivant
+          const base = hintCandidates ?? computeCandidates(game.play.cells);
+          set({ hint: null, hintCandidates: applyHintToCandidates(base, hint) });
+        },
+
+        dismissHint: () => set({ hint: null }),
+
+        clearGame: () => set({ game: null, hint: null, hintCandidates: null }),
       };
     },
     {

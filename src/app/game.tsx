@@ -11,12 +11,18 @@ import {
   Board,
   GameClock,
   GameOverOverlay,
+  HintPanel,
   MAX_MISTAKES,
   NumberPad,
   useGameStore,
 } from '@/features/game';
 import { useHistoryStore, wonOnTimeDates } from '@/features/history';
-import { AdBanner, maybeShowInterstitialAfterGame } from '@/features/monetization';
+import {
+  AdBanner,
+  HintButton,
+  maybeShowInterstitialAfterGame,
+  ReviveButton,
+} from '@/features/monetization';
 import { usePuzzlesStore } from '@/features/puzzles';
 import { todayLocalDate } from '@/lib/dates';
 import { fontSize, spacing, useThemeColors } from '@/theme/tokens';
@@ -33,6 +39,7 @@ export default function GameScreen() {
   const clearGame = useGameStore((s) => s.clearGame);
   const takePuzzle = usePuzzlesStore((s) => s.takePuzzle);
   const records = useHistoryStore((s) => s.records);
+  const hint = useGameStore((s) => s.hint);
 
   // passage en arrière-plan = chrono en pause
   useEffect(() => {
@@ -59,6 +66,8 @@ export default function GameScreen() {
 
   const isPausedOverlayVisible = game.status === 'playing' && game.runStartedAt === null;
   const won = game.status === 'won';
+  const hintCells =
+    hint === null ? undefined : hint.kind === 'technique' ? hint.cells : [hint.cell];
 
   // interstitiel éventuel APRÈS la fin de partie, jamais pendant (PRD §6)
   const handleExitToHome = (): void => {
@@ -117,9 +126,10 @@ export default function GameScreen() {
       </View>
 
       <View style={styles.boardArea}>
-        <Board />
+        <Board hintCells={hintCells} />
       </View>
-      <NumberPad />
+      <NumberPad hintSlot={<HintButton />} />
+      <HintPanel />
       <View style={styles.bannerArea}>
         <AdBanner />
       </View>
@@ -137,6 +147,7 @@ export default function GameScreen() {
       <GameOverOverlay
         onNewGame={won && game.mode === 'daily' ? null : handleNewGameFromOverlay}
         onExit={handleExitToHome}
+        reviveSlot={<ReviveButton />}
         dailyResultSlot={
           won && game.mode === 'daily' && game.dailyDate !== null ? (
             <DailyResult

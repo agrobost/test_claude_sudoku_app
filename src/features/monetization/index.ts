@@ -5,7 +5,19 @@ import { useMonetizationStore } from './store';
 
 export { adsReady, initAds, maybeShowInterstitialAfterGame, showRewardedAd } from './ads';
 export { AdBanner } from './components/AdBanner';
+export { HintButton } from './components/HintButton';
+export { ReviveButton } from './components/ReviveButton';
 export { adsConfigured } from './env';
+export {
+  canUseHint,
+  consumeHint,
+  FREE_HINTS_PER_DAY,
+  freshQuota,
+  grantBonusHint,
+  hintsRemaining,
+  normalizeQuota,
+  type HintQuotaState,
+} from './hintQuota';
 export {
   canOfferRewarded,
   canShowBanner,
