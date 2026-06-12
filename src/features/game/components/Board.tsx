@@ -42,24 +42,30 @@ export function Board({ hintCells }: Props) {
         { width: boardSize, height: boardSize, borderColor: colors.boardLineBold },
       ]}
     >
-      <View style={styles.cells}>
-        {game.play.cells.map((value, cell) => (
-          <Cell
-            key={cell}
-            cell={cell}
-            size={cellSize}
-            value={value}
-            noteMask={game.play.notes[cell]}
-            isGiven={givens[cell] !== 0}
-            isSelected={selected === cell}
-            isPeer={peers !== null && peers.includes(cell)}
-            isSameDigit={value !== 0 && value === selectedValue && selected !== cell}
-            isError={value !== 0 && value !== solution[cell]}
-            isHintTarget={hintSet !== null && hintSet.has(cell)}
-            onPress={selectCell}
-          />
-        ))}
-      </View>
+      {Array.from({ length: 9 }, (_, row) => (
+        <View key={row} style={styles.row}>
+          {Array.from({ length: 9 }, (_, col) => {
+            const cell = row * 9 + col;
+            const value = game.play.cells[cell] ?? 0;
+            return (
+              <Cell
+                key={cell}
+                cell={cell}
+                size={cellSize}
+                value={value}
+                noteMask={game.play.notes[cell] ?? 0}
+                isGiven={givens[cell] !== 0}
+                isSelected={selected === cell}
+                isPeer={peers !== null && peers.includes(cell)}
+                isSameDigit={value !== 0 && value === selectedValue && selected !== cell}
+                isError={value !== 0 && value !== solution[cell]}
+                isHintTarget={hintSet !== null && hintSet.has(cell)}
+                onPress={selectCell}
+              />
+            );
+          })}
+        </View>
+      ))}
       {[1, 2].map((i) => (
         <View
           key={`v${i}`}
@@ -102,10 +108,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 2,
     overflow: 'hidden',
+    flexDirection: 'column',
   },
-  cells: {
+  row: {
+    flex: 1,
     flexDirection: 'row',
-    flexWrap: 'wrap',
   },
   separator: {
     position: 'absolute',

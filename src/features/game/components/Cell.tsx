@@ -60,8 +60,7 @@ function CellComponent({
       style={[
         styles.cell,
         {
-          width: size,
-          height: size,
+          flex: 1,
           backgroundColor: background,
           borderColor: colors.boardLine,
           borderRightWidth: col === 8 ? 0 : col % 3 === 2 ? 0 : StyleSheet.hairlineWidth,
