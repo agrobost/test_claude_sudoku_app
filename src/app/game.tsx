@@ -16,6 +16,7 @@ import {
   useGameStore,
 } from '@/features/game';
 import { useHistoryStore, wonOnTimeDates } from '@/features/history';
+import { AdBanner, maybeShowInterstitialAfterGame } from '@/features/monetization';
 import { usePuzzlesStore } from '@/features/puzzles';
 import { todayLocalDate } from '@/lib/dates';
 import { fontSize, spacing, useThemeColors } from '@/theme/tokens';
@@ -59,18 +60,25 @@ export default function GameScreen() {
   const isPausedOverlayVisible = game.status === 'playing' && game.runStartedAt === null;
   const won = game.status === 'won';
 
+  // interstitiel éventuel APRÈS la fin de partie, jamais pendant (PRD §6)
   const handleExitToHome = (): void => {
-    clearGame();
-    router.back();
+    void maybeShowInterstitialAfterGame().then(() => {
+      clearGame();
+      router.back();
+    });
   };
 
   const handleNewGameFromOverlay = (): void => {
-    if (game.status === 'lost' || game.mode === 'daily') {
-      // rejouer la même grille (défaite) ou le même défi du jour
-      startGame(game.puzzle, game.mode, game.dailyDate);
-      return;
-    }
-    startGame(takePuzzle(game.puzzle.difficulty), 'classic', null);
+    void maybeShowInterstitialAfterGame().then(() => {
+      const current = useGameStore.getState().game;
+      if (current === null) return;
+      if (current.status === 'lost' || current.mode === 'daily') {
+        // rejouer la même grille (défaite) ou le même défi du jour
+        startGame(current.puzzle, current.mode, current.dailyDate);
+        return;
+      }
+      startGame(takePuzzle(current.puzzle.difficulty), 'classic', null);
+    });
   };
 
   return (
@@ -112,6 +120,9 @@ export default function GameScreen() {
         <Board />
       </View>
       <NumberPad />
+      <View style={styles.bannerArea}>
+        <AdBanner />
+      </View>
 
       {isPausedOverlayVisible ? (
         <View style={[styles.pauseBackdrop, { backgroundColor: colors.backdrop }]}>
@@ -168,6 +179,10 @@ const styles = StyleSheet.create({
   boardArea: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  bannerArea: {
+    justifyContent: 'flex-end',
+    flexGrow: 1,
   },
   pauseBackdrop: {
     position: 'absolute',

@@ -44,6 +44,40 @@ jest.mock('expo-crypto', () => {
   };
 });
 
+jest.mock('react-native-applovin-max', () => {
+  const fullscreen = {
+    isAdReady: jest.fn(async () => false),
+    loadAd: jest.fn(),
+    showAd: jest.fn(),
+    addAdLoadedEventListener: jest.fn(),
+    addAdLoadFailedEventListener: jest.fn(),
+    addAdHiddenEventListener: jest.fn(),
+    addAdFailedToDisplayEventListener: jest.fn(),
+    removeAdLoadedEventListener: jest.fn(),
+    removeAdLoadFailedEventListener: jest.fn(),
+    removeAdHiddenEventListener: jest.fn(),
+    removeAdFailedToDisplayEventListener: jest.fn(),
+  };
+  return {
+    AppLovinMAX: {
+      initialize: jest.fn(async () => ({})),
+      isInitialized: jest.fn(async () => false),
+      setTermsAndPrivacyPolicyFlowEnabled: jest.fn(),
+      setPrivacyPolicyUrl: jest.fn(),
+      setTermsOfServiceUrl: jest.fn(),
+    },
+    InterstitialAd: { ...fullscreen },
+    RewardedAd: { ...fullscreen, addAdReceivedRewardEventListener: jest.fn(), removeAdReceivedRewardEventListener: jest.fn() },
+    AdView: () => null,
+    AdFormat: { BANNER: 'banner', MREC: 'mrec' },
+  };
+});
+
+jest.mock('expo-tracking-transparency', () => ({
+  PermissionStatus: { GRANTED: 'granted', DENIED: 'denied', UNDETERMINED: 'undetermined' },
+  requestTrackingPermissionsAsync: jest.fn(async () => ({ status: 'denied' })),
+}));
+
 jest.mock('@react-native-community/netinfo', () => ({
   addEventListener: jest.fn(() => jest.fn()),
   fetch: jest.fn(async () => ({ isConnected: true, isInternetReachable: true })),

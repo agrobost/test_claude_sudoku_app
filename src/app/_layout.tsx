@@ -7,6 +7,7 @@ import { ensureAnonymousSession } from '@/features/auth';
 import { initConsent } from '@/features/consent';
 import { prefetchUpcomingDailies } from '@/features/daily';
 import { initGameRecorder } from '@/features/history';
+import { initMonetization } from '@/features/monetization';
 import { useSettingsStore } from '@/features/settings';
 import { initSync } from '@/features/sync';
 import { applyLanguage } from '@/lib/i18n';
@@ -33,6 +34,7 @@ export default function RootLayout() {
   useEffect(() => {
     const unsubscribeRecorder = initGameRecorder();
     initConsent();
+    initMonetization();
     let unsubscribeSync: (() => void) | null = null;
     void ensureAnonymousSession().then(() => {
       unsubscribeSync = initSync();
