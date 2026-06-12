@@ -53,6 +53,56 @@ export const en: typeof fr = {
     hard: 'Hard',
     expert: 'Expert',
   },
+  settings: {
+    account: {
+      title: 'Account',
+      anonymousHint:
+        'Your progress is tied to this device. Link an account to secure it and restore it after a reinstall.',
+      linkApple: 'Continue with Apple',
+      linkGoogle: 'Continue with Google',
+      linkedAs: 'Signed in ({{email}})',
+      linkedTitle: 'Account linked',
+      linkedMessage: 'Your progress is now backed up.',
+      linkErrorTitle: 'Linking failed',
+      signOut: 'Sign out',
+      signOutTitle: 'Sign out?',
+      signOutMessage:
+        'Local data on this device will be cleared. Your progress stays attached to your account.',
+      signOutConfirm: 'Sign out',
+    },
+    language: {
+      title: 'Language',
+      system: 'System',
+    },
+    about: {
+      title: 'About',
+      privacy: 'Privacy',
+      about: 'About the app',
+      version: 'Version {{version}}',
+    },
+    danger: {
+      title: 'Danger zone',
+      delete: 'Delete my account',
+      deleteTitle: 'Delete your account?',
+      deleteMessage:
+        'All your data (account, games, progress) will be permanently erased from our servers and this device. This cannot be undone.',
+      deleteConfirm: 'Delete everything',
+      deletedTitle: 'Account deleted',
+      deletedMessage: 'All your data has been erased. The app starts fresh.',
+      deleteErrorTitle: 'Deletion failed',
+      deleteErrorMessage: 'Check your connection and try again.',
+    },
+  },
+  legal: {
+    privacy: {
+      title: 'Privacy',
+      body: 'Privacy policy\n\nWho we are. This sudoku app is independently published. For any question: see the app’s store listing.\n\nData we collect. An anonymous account identifier is created automatically to save your progress (finished games: puzzle played, difficulty, result, duration, mistakes, hints, date). If you link an Apple or Google account, your email address is associated with it. Your data is never sold.\n\nAdvertising and measurement. The app may show ads (AppLovin MAX) and use measurement and stability tools (Firebase Analytics, Crashlytics). These only activate after your consent, which you can change at any time in Settings. Without consent, non-personalized ads may be shown.\n\nPurchases. The “Remove ads” purchase is processed by the App Store or Google Play (via RevenueCat); we never see your payment details.\n\nRetention. Data is kept for as long as your account exists.\n\nYour rights (GDPR). You can access, rectify or erase your data: “Delete my account” in Settings immediately and permanently erases all your data from our servers.',
+    },
+    about: {
+      title: 'About',
+      body: 'Sudoku — version {{version}}.\n\nA clean sudoku: daily challenge, hints that teach the technique, fully playable offline.\n\nBuilt with Expo / React Native and Supabase.',
+    },
+  },
   stats: {
     played: 'Games',
     won: 'Wins',

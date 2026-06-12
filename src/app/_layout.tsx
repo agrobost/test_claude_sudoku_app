@@ -3,11 +3,12 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
-import '@/lib/i18n';
 import { ensureAnonymousSession } from '@/features/auth';
 import { prefetchUpcomingDailies } from '@/features/daily';
 import { initGameRecorder } from '@/features/history';
+import { useSettingsStore } from '@/features/settings';
 import { initSync } from '@/features/sync';
+import { applyLanguage } from '@/lib/i18n';
 import { useThemeColors } from '@/theme/tokens';
 
 const queryClient = new QueryClient({
@@ -22,6 +23,11 @@ const queryClient = new QueryClient({
 
 export default function RootLayout() {
   const colors = useThemeColors();
+  const languageOverride = useSettingsStore((s) => s.languageOverride);
+
+  useEffect(() => {
+    applyLanguage(languageOverride);
+  }, [languageOverride]);
 
   useEffect(() => {
     const unsubscribeRecorder = initGameRecorder();

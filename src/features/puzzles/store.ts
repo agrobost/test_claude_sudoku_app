@@ -16,6 +16,7 @@ type PuzzlesStore = {
   readonly downloaded: readonly PackPuzzle[];
   takePuzzle: (difficulty: Difficulty) => PackPuzzle;
   addDownloaded: (puzzles: readonly PackPuzzle[]) => void;
+  resetAll: () => void;
   unseenCount: (difficulty: Difficulty) => number;
 };
 
@@ -67,6 +68,8 @@ export const usePuzzlesStore = create<PuzzlesStore>()(
         const additions = puzzles.filter((p) => !known.has(p.id) && !consumed[p.id]);
         if (additions.length > 0) set({ downloaded: [...downloaded, ...additions] });
       },
+
+      resetAll: () => set({ consumed: {}, downloaded: [] }),
 
       unseenCount: (difficulty) => {
         const { consumed, downloaded } = get();

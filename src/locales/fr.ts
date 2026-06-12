@@ -50,6 +50,56 @@ export const fr = {
     hard: 'Difficile',
     expert: 'Expert',
   },
+  settings: {
+    account: {
+      title: 'Compte',
+      anonymousHint:
+        'Ta progression est liée à cet appareil. Lie un compte pour la sécuriser et la retrouver après une réinstallation.',
+      linkApple: 'Continuer avec Apple',
+      linkGoogle: 'Continuer avec Google',
+      linkedAs: 'Connecté ({{email}})',
+      linkedTitle: 'Compte lié',
+      linkedMessage: 'Ta progression est maintenant sauvegardée.',
+      linkErrorTitle: 'Liaison impossible',
+      signOut: 'Se déconnecter',
+      signOutTitle: 'Se déconnecter ?',
+      signOutMessage:
+        'Les données locales de cet appareil seront effacées. Ta progression reste attachée à ton compte.',
+      signOutConfirm: 'Se déconnecter',
+    },
+    language: {
+      title: 'Langue',
+      system: 'Système',
+    },
+    about: {
+      title: 'À propos',
+      privacy: 'Confidentialité',
+      about: 'À propos de l’app',
+      version: 'Version {{version}}',
+    },
+    danger: {
+      title: 'Zone sensible',
+      delete: 'Supprimer mon compte',
+      deleteTitle: 'Supprimer ton compte ?',
+      deleteMessage:
+        'Toutes tes données (compte, parties, progression) seront définitivement effacées de nos serveurs et de cet appareil. Cette action est irréversible.',
+      deleteConfirm: 'Tout supprimer',
+      deletedTitle: 'Compte supprimé',
+      deletedMessage: 'Toutes tes données ont été effacées. L’app repart de zéro.',
+      deleteErrorTitle: 'Suppression impossible',
+      deleteErrorMessage: 'Vérifie ta connexion et réessaie.',
+    },
+  },
+  legal: {
+    privacy: {
+      title: 'Confidentialité',
+      body: 'Politique de confidentialité\n\nQui sommes-nous ? Cette application de sudoku est éditée de manière indépendante. Pour toute question : voir la fiche de l’app sur le store.\n\nDonnées collectées. Un identifiant de compte anonyme est créé automatiquement pour sauvegarder ta progression (parties terminées : grille jouée, difficulté, résultat, durée, erreurs, indices, date). Si tu lies un compte Apple ou Google, ton adresse e-mail y est associée. Aucune donnée n’est revendue.\n\nPublicité et mesure. L’application peut afficher des publicités (AppLovin MAX) et utiliser des outils de mesure et de stabilité (Firebase Analytics, Crashlytics). Ces traitements ne s’activent qu’après recueil de ton consentement, que tu peux modifier à tout moment dans Réglages. Sans consentement, des publicités non personnalisées peuvent être affichées.\n\nAchats. L’achat « Sans pub » est traité par l’App Store ou Google Play (via RevenueCat) ; nous ne voyons jamais tes informations de paiement.\n\nDurée de conservation. Les données sont conservées tant que ton compte existe.\n\nTes droits (RGPD). Tu peux accéder à tes données, les rectifier ou les supprimer : « Supprimer mon compte » dans les Réglages efface immédiatement et définitivement toutes tes données de nos serveurs.',
+    },
+    about: {
+      title: 'À propos',
+      body: 'Sudoku — version {{version}}.\n\nUn sudoku épuré : défi quotidien, indices qui expliquent la technique, jouable hors connexion.\n\nDéveloppé avec Expo / React Native et Supabase.',
+    },
+  },
   stats: {
     played: 'Parties',
     won: 'Victoires',

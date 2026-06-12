@@ -7,6 +7,11 @@ import { fr } from '@/locales/fr';
 
 const deviceLanguage = getLocales()[0]?.languageCode ?? 'en';
 
+/** Applique un override de langue (Réglages) ou retombe sur la langue du device. */
+export function applyLanguage(override: 'fr' | 'en' | null): void {
+  void i18n.changeLanguage(override ?? deviceLanguage);
+}
+
 const i18n = createInstance();
 
 // initReactI18next enregistre l'instance comme défaut de useTranslation()
