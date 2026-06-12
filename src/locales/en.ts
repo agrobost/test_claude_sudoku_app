@@ -218,6 +218,7 @@ export const en: typeof fr = {
     entry: 'Debug menu',
     common: {
       done: 'Done.',
+      close: 'Close',
     },
     state: {
       title: 'State',

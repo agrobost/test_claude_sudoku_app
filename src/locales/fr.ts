@@ -215,6 +215,7 @@ export const fr = {
     entry: 'Menu debug',
     common: {
       done: 'Fait.',
+      close: 'Fermer',
     },
     state: {
       title: 'État',

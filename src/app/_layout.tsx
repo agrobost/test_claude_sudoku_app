@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 
 import { ensureAnonymousSession } from '@/features/auth';
 import { initConsent } from '@/features/consent';
+import { DebugOverlay } from '@/features/debug';
 import { prefetchUpcomingDailies } from '@/features/daily';
 import { initGameRecorder } from '@/features/history';
 import { initMonetization } from '@/features/monetization';
@@ -58,6 +59,7 @@ export default function RootLayout() {
         }}
       />
       <StatusBar style="auto" />
+      <DebugOverlay />
     </QueryClientProvider>
   );
 }
