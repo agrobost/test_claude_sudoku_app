@@ -235,7 +235,7 @@ app/
     daily.tsx                 # Calendrier du défi du jour
     stats.tsx                 # Statistiques
     settings.tsx              # Réglages
-  game/[gameId].tsx           # Écran de jeu (stack plein écran, header custom)
+  game.tsx                    # Écran de jeu (une seule partie active, portée par le store)
   paywall.tsx                 # Modale « Sans pub »
   legal/privacy.tsx           # Politique de confidentialité
   legal/about.tsx             # À propos / licences
@@ -299,10 +299,11 @@ restauration après liaison de compte.
 `signInAnonymously` si aucune session · 3) prefetch daily J/J+1 + refill si
 réseau · 4) flush outbox. Les étapes 2-4 sont non bloquantes.
 
-**Consentement (avant toute pub)** : ATT (iOS) → CMP TCF → init MAX (signaux
-consentement) → Firebase Consent Mode (`analytics_storage` selon consentement,
-Crashlytics activé après acceptation). Refus ⇒ pubs non personnalisées, app
-pleinement fonctionnelle. Réouverture du CMP depuis Réglages.
+**Consentement (avant toute pub)** : ATT (iOS) → flow CMP TCF intégré de MAX
+(Google UMP, déclenché à l'init du SDK, URL de politique requise via
+`EXPO_PUBLIC_PRIVACY_POLICY_URL`). Analytics/Crashlytics : opt-in explicite
+dans Réglages (désactivé par défaut), appliqué via Consent Mode ; le refus
+laisse l'app pleinement fonctionnelle avec pubs non personnalisées.
 
 ## 7. Moteur sudoku (le cœur testé)
 
@@ -362,6 +363,10 @@ gradePuzzle(givens: Grid): { difficulty, maxTechnique } | null   // null si solu
   versionnées dans `supabase/migrations`, jamais de DDL manuel.
 
 ## 10. Risques et points de vigilance
+
+**Notifications locales** : plan pur recalculé (réglages, daily gagné, heure
+courante) puis reprogrammation idempotente (cancel-all + schedule) ; rappel
+quotidien à heure préréglée (8/12/19/21) et alerte série à 20 h locale.
 
 | Risque | Mitigation |
 |---|---|

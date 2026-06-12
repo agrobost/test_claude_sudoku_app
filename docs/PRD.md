@@ -74,7 +74,7 @@ progresser — c'est lui que les indices pédagogiques fidélisent.
 | # | Story | Critères d'acceptation clés |
 |---|---|---|
 | U13 | À la fin du défi du jour, je vois que je suis « plus rapide que X % des joueurs » et je partage mon résultat. | Percentile calculé serveur (RPC), affiché seulement en ligne ; partage natif texte sans spoiler de la grille. |
-| U14 | Je reçois un rappel quotidien et une alerte si ma série va expirer. | Notifications **locales**, opt-in explicite, heure du rappel configurable, alerte streak à 20 h locale si daily non gagné. |
+| U14 | Je reçois un rappel quotidien et une alerte si ma série va expirer. | Notifications **locales**, opt-in explicite, heure du rappel au choix parmi des créneaux préréglés (8/12/19/21 h), alerte streak à 20 h locale si daily non gagné. |
 | U15 | Je consulte mes statistiques. | Parties jouées/gagnées, taux de réussite, meilleur temps et temps moyen par difficulté, streak actuel/record. Calcul local d'abord. |
 | U16 | Je lie mon compte Apple ou Google pour sécuriser ma progression. | Liaison de l'identité sur la session anonyme (même uid) ; bandeau incitatif non bloquant ; déconnexion propre. |
 | U17 | Je rejoue les défis des jours passés du mois courant. | Jouables depuis le calendrier, comptent pour compléter le mois, **ne modifient pas** la streak (sauf le jour J). |
@@ -101,7 +101,7 @@ moment (avant la première pub), un tooltip contextuel guide la première grille
 
 - **Jour calendaire** : le daily est indexé sur la **date locale** du device ; le serveur publie les grilles à l'avance (≥ 90 jours) et autorise la lecture jusqu'à date UTC+1 jour pour couvrir les fuseaux en avance. Détails en architecture.
 - **Streak** : suite de dates locales consécutives avec daily **gagné**. Gagner le daily du jour J avant minuit local maintient la série. Rejouer un jour passé ne la répare pas.
-- **Indices** : quota de 3/jour offert, remis à zéro à minuit local, stocké localement. Rewarded → +1 indice, sans plafond. L'indice consomme le quota même en fallback « révéler la cellule ».
+- **Indices** : quota de 3/jour offert, remis à zéro à minuit local, stocké localement. Rewarded → +1 indice, sans plafond ; un bonus non utilisé expire aussi à minuit local. L'indice consomme le quota même en fallback « révéler la cellule ».
 - **Erreurs** : une saisie contraire à la solution = 1 erreur (les notes n'en déclenchent jamais). 3 erreurs = défaite ; une seule « continuation » par rewarded et par partie, qui remet le compteur à 2/3.
 - **Interstitiels** : après fin de partie (victoire, défaite ou abandon) uniquement ; jamais avant la 3ᵉ partie de la vie de l'utilisateur ; intervalle minimal de 3 min ; jamais pour les acheteurs « Sans pub ».
 - **Percentile** : « plus rapide que X % » comparé aux **premières victoires** des autres joueurs sur la même date, durées < 30 s exclues (anti-bruit).
