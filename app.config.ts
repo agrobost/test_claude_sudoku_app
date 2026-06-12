@@ -4,8 +4,10 @@ import { type ExpoConfig } from 'expo/config';
 
 // Fichiers de config Firebase (non commités) : leur présence active les plugins.
 // Sans eux, l'app se construit et tourne sans analytics ni crash reporting.
-const GOOGLE_SERVICES_ANDROID = './firebase/google-services.json';
-const GOOGLE_SERVICES_IOS = './firebase/GoogleService-Info.plist';
+// En local : fichiers DEV dans ./firebase/. Sur EAS : variables d'environnement
+// de type fichier (par env development/preview/production), qui exposent un chemin.
+const GOOGLE_SERVICES_ANDROID = process.env.GOOGLE_SERVICES_JSON ?? './firebase/google-services.json';
+const GOOGLE_SERVICES_IOS = process.env.GOOGLE_SERVICE_INFO_PLIST ?? './firebase/GoogleService-Info.plist';
 const hasFirebaseAndroid = existsSync(GOOGLE_SERVICES_ANDROID);
 const hasFirebaseIos = existsSync(GOOGLE_SERVICES_IOS);
 const hasFirebase = hasFirebaseAndroid || hasFirebaseIos;
