@@ -245,7 +245,8 @@ export const fr = {
     },
     hints: {
       title: 'Indices',
-      remaining: 'Indices restants aujourd’hui : {{count}}',
+      remaining: 'Indices restants aujourd’hui : {{count}} ({{free}} gratuits + {{bonus}} bonus)',
+      grantOne: '+1 indice bonus',
       grant: '+5 indices bonus',
       reset: 'Réinitialiser le quota du jour',
     },

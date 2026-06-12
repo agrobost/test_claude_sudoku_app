@@ -20,6 +20,7 @@ export {
   canUseHint,
   consumeHint,
   FREE_HINTS_PER_DAY,
+  freeHintsRemaining,
   freshQuota,
   grantBonusHint,
   hintsRemaining,

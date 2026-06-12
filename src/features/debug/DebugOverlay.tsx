@@ -2,7 +2,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 import { useGameStore } from '@/features/game';
 import { fontSize, spacing, useThemeColors } from '@/theme/tokens';
@@ -47,23 +47,27 @@ export function DebugOverlay() {
       </Pressable>
 
       <Modal visible={open} animationType="slide" onRequestClose={() => setOpen(false)}>
-        <SafeAreaView
-          style={[styles.modal, { backgroundColor: colors.background }]}
-          edges={['top', 'bottom']}
-        >
-          <View style={styles.modalHeader}>
-            <Text style={[styles.modalTitle, { color: colors.text }]}>{t('debug.title')}</Text>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t('debug.common.close')}
-              hitSlop={12}
-              onPress={() => setOpen(false)}
-            >
-              <MaterialCommunityIcons name="close" size={26} color={colors.text} />
-            </Pressable>
-          </View>
-          <DebugPanel />
-        </SafeAreaView>
+        {/* un Modal natif vit dans sa propre fenêtre : les insets du provider
+            racine ne s'y appliquent pas, il faut un SafeAreaProvider dédié */}
+        <SafeAreaProvider>
+          <SafeAreaView
+            style={[styles.modal, { backgroundColor: colors.background }]}
+            edges={['top', 'bottom']}
+          >
+            <View style={styles.modalHeader}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>{t('debug.title')}</Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('debug.common.close')}
+                hitSlop={12}
+                onPress={() => setOpen(false)}
+              >
+                <MaterialCommunityIcons name="close" size={26} color={colors.text} />
+              </Pressable>
+            </View>
+            <DebugPanel />
+          </SafeAreaView>
+        </SafeAreaProvider>
       </Modal>
     </>
   );

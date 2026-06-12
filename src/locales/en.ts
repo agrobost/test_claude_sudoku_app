@@ -248,7 +248,8 @@ export const en: typeof fr = {
     },
     hints: {
       title: 'Hints',
-      remaining: 'Hints left today: {{count}}',
+      remaining: 'Hints left today: {{count}} ({{free}} free + {{bonus}} bonus)',
+      grantOne: '+1 bonus hint',
       grant: '+5 bonus hints',
       reset: 'Reset today’s quota',
     },

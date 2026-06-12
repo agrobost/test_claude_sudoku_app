@@ -11,6 +11,7 @@ import {
   adsConfigured,
   adsReady,
   debugShowInterstitial,
+  freeHintsRemaining,
   hintsRemaining,
   iapConfigured,
   normalizeQuota,
@@ -65,7 +66,8 @@ export function DebugPanel() {
   const unseenCount = usePuzzlesStore((s) => s.unseenCount);
 
   const today = todayLocalDate();
-  const hintsLeft = hintsRemaining(normalizeQuota(hintQuota, today));
+  const quota = normalizeQuota(hintQuota, today);
+  const hintsLeft = hintsRemaining(quota);
   const outboxCount = readOutbox().length;
   const playing = gameStatus === 'playing';
 
@@ -206,7 +208,14 @@ export function DebugPanel() {
       </Section>
 
       <Section title={t('debug.hints.title')}>
-        <StateLine text={t('debug.hints.remaining', { count: hintsLeft })} />
+        <StateLine
+          text={t('debug.hints.remaining', {
+            count: hintsLeft,
+            free: freeHintsRemaining(quota),
+            bonus: quota.bonus,
+          })}
+        />
+        <Action label={t('debug.hints.grantOne')} onPress={run(() => debugGrantHints(1))} />
         <Action label={t('debug.hints.grant')} onPress={run(() => debugGrantHints(5))} />
         <Action label={t('debug.hints.reset')} onPress={run(debugResetHintQuota)} />
       </Section>
