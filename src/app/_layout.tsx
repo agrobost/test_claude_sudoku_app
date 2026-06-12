@@ -7,6 +7,7 @@ import '@/lib/i18n';
 import { ensureAnonymousSession } from '@/features/auth';
 import { prefetchUpcomingDailies } from '@/features/daily';
 import { initGameRecorder } from '@/features/history';
+import { initSync } from '@/features/sync';
 import { useThemeColors } from '@/theme/tokens';
 
 const queryClient = new QueryClient({
@@ -24,8 +25,15 @@ export default function RootLayout() {
 
   useEffect(() => {
     const unsubscribeRecorder = initGameRecorder();
-    void ensureAnonymousSession().then(() => prefetchUpcomingDailies());
-    return unsubscribeRecorder;
+    let unsubscribeSync: (() => void) | null = null;
+    void ensureAnonymousSession().then(() => {
+      unsubscribeSync = initSync();
+      void prefetchUpcomingDailies();
+    });
+    return () => {
+      unsubscribeRecorder();
+      unsubscribeSync?.();
+    };
   }, []);
 
   return (

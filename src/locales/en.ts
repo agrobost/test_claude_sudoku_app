@@ -53,6 +53,15 @@ export const en: typeof fr = {
     hard: 'Hard',
     expert: 'Expert',
   },
+  stats: {
+    played: 'Games',
+    won: 'Wins',
+    winRate: 'Win rate',
+    difficulty: 'Difficulty',
+    wonShort: 'Won',
+    best: 'Best',
+    average: 'Average',
+  },
   game: {
     daily: 'Daily {{date}}',
     pad: {

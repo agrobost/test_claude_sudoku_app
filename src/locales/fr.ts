@@ -50,6 +50,15 @@ export const fr = {
     hard: 'Difficile',
     expert: 'Expert',
   },
+  stats: {
+    played: 'Parties',
+    won: 'Victoires',
+    winRate: 'Réussite',
+    difficulty: 'Difficulté',
+    wonShort: 'Gagnées',
+    best: 'Record',
+    average: 'Moyenne',
+  },
   game: {
     daily: 'Défi du {{date}}',
     pad: {
