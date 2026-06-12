@@ -1,26 +1,22 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function HomeScreen() {
-  const { t } = useTranslation();
+import { useThemeColors } from '@/theme/tokens';
 
+export default function SettingsScreen() {
+  const { t } = useTranslation();
+  const colors = useThemeColors();
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{t('app.name')}</Text>
-      <Text>{t('home.placeholder')}</Text>
+      <Text style={{ color: colors.textMuted }}>{t('common.comingSoon')}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: 'center',
+    flex: 1,
     justifyContent: 'center',
-    gap: 8,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
   },
 });

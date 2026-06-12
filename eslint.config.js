@@ -31,8 +31,8 @@ module.exports = defineConfig([
     },
   },
   {
-    // Outillage CLI : la sortie console est le comportement attendu
-    files: ['scripts/**/*.ts'],
+    // Outillage CLI et façade de log : console assumée
+    files: ['scripts/**/*.ts', 'src/lib/logger.ts'],
     rules: {
       'no-console': 'off',
     },
