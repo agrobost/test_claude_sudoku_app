@@ -80,6 +80,14 @@ export const en: typeof fr = {
       buy: 'Remove ads',
       restore: 'Restore purchases',
     },
+    notifications: {
+      title: 'Notifications',
+      toggle: 'Daily reminder',
+      hint: 'A reminder for the daily challenge, and an 8 PM alert when your streak is at stake.',
+      hourChip: '{{hour}}:00',
+      deniedTitle: 'Notifications declined',
+      deniedMessage: 'Allow notifications in your phone settings to enable the reminder.',
+    },
     privacy: {
       title: 'Privacy',
       analytics: 'Usage statistics and crash reports',
@@ -162,6 +170,13 @@ export const en: typeof fr = {
       title: 'Block reduction',
       body: 'On {{unit}}, digit {{digits}} is confined to cells {{cells}}, all in the same block. It can therefore be eliminated from the rest of that block.',
     },
+  },
+  notifications: {
+    channelName: 'Reminders',
+    reminderTitle: 'Your daily sudoku is waiting',
+    reminderBody: 'A few minutes is all it takes to keep the rhythm.',
+    streakTitle: 'Your streak is at stake 🔥',
+    streakBody: 'Finish today’s challenge before midnight to keep it alive.',
   },
   paywall: {
     title: 'Remove ads',

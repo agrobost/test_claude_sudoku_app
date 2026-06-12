@@ -73,6 +73,15 @@ jest.mock('react-native-applovin-max', () => {
   };
 });
 
+jest.mock('expo-notifications', () => ({
+  requestPermissionsAsync: jest.fn(async () => ({ granted: false })),
+  setNotificationChannelAsync: jest.fn(async () => null),
+  cancelAllScheduledNotificationsAsync: jest.fn(async () => undefined),
+  scheduleNotificationAsync: jest.fn(async () => 'id'),
+  AndroidImportance: { DEFAULT: 3 },
+  SchedulableTriggerInputTypes: { DAILY: 'daily', DATE: 'date' },
+}));
+
 jest.mock('react-native-purchases', () => ({
   __esModule: true,
   default: {

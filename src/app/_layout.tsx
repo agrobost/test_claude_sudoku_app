@@ -8,6 +8,7 @@ import { initConsent } from '@/features/consent';
 import { prefetchUpcomingDailies } from '@/features/daily';
 import { initGameRecorder } from '@/features/history';
 import { initMonetization } from '@/features/monetization';
+import { initNotifications } from '@/features/notifications';
 import { useSettingsStore } from '@/features/settings';
 import { initSync } from '@/features/sync';
 import { applyLanguage } from '@/lib/i18n';
@@ -35,6 +36,7 @@ export default function RootLayout() {
     const unsubscribeRecorder = initGameRecorder();
     initConsent();
     initMonetization();
+    const unsubscribeNotifications = initNotifications();
     let unsubscribeSync: (() => void) | null = null;
     void ensureAnonymousSession().then(() => {
       unsubscribeSync = initSync();
@@ -42,6 +44,7 @@ export default function RootLayout() {
     });
     return () => {
       unsubscribeRecorder();
+      unsubscribeNotifications();
       unsubscribeSync?.();
     };
   }, []);

@@ -77,6 +77,14 @@ export const fr = {
       buy: 'Supprimer les pubs',
       restore: 'Restaurer mes achats',
     },
+    notifications: {
+      title: 'Notifications',
+      toggle: 'Rappel quotidien',
+      hint: 'Un rappel pour le défi du jour, et une alerte à 20 h si ta série est en jeu.',
+      hourChip: '{{hour}} h',
+      deniedTitle: 'Notifications refusées',
+      deniedMessage: 'Autorise les notifications dans les réglages du téléphone pour activer le rappel.',
+    },
     privacy: {
       title: 'Confidentialité',
       analytics: 'Statistiques d’usage et rapports de plantage',
@@ -159,6 +167,13 @@ export const fr = {
       title: 'Réduction de bloc',
       body: 'Sur {{unit}}, le chiffre {{digits}} est confiné aux cases {{cells}}, toutes dans le même bloc. Il s’élimine donc du reste de ce bloc.',
     },
+  },
+  notifications: {
+    channelName: 'Rappels',
+    reminderTitle: 'Ton sudoku du jour t’attend',
+    reminderBody: 'Quelques minutes suffisent pour garder le rythme.',
+    streakTitle: 'Ta série est en jeu 🔥',
+    streakBody: 'Termine le défi du jour avant minuit pour la préserver.',
   },
   paywall: {
     title: 'Sans pub',

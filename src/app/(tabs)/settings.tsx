@@ -18,8 +18,9 @@ import { setAnalyticsConsent, useConsentStore } from '@/features/consent';
 import { useGameStore } from '@/features/game';
 import { useHistoryStore } from '@/features/history';
 import { restorePurchases, useMonetizationStore } from '@/features/monetization';
+import { requestNotificationPermission } from '@/features/notifications';
 import { usePuzzlesStore } from '@/features/puzzles';
-import { useSettingsStore, type LanguageOverride } from '@/features/settings';
+import { REMINDER_HOURS, useSettingsStore, type LanguageOverride } from '@/features/settings';
 import { pullServerHistory, writeOutbox } from '@/features/sync';
 import { fontSize, spacing, useThemeColors } from '@/theme/tokens';
 
@@ -33,7 +34,28 @@ export default function SettingsScreen() {
   const setLanguageOverride = useSettingsStore((s) => s.setLanguageOverride);
   const analyticsConsent = useConsentStore((s) => s.analyticsConsent);
   const noAds = useMonetizationStore((s) => s.noAds);
+  const notificationsEnabled = useSettingsStore((s) => s.notificationsEnabled);
+  const reminderHour = useSettingsStore((s) => s.reminderHour);
+  const setNotificationsEnabled = useSettingsStore((s) => s.setNotificationsEnabled);
+  const setReminderHour = useSettingsStore((s) => s.setReminderHour);
   const [busy, setBusy] = useState(false);
+
+  const toggleNotifications = (enabled: boolean): void => {
+    if (!enabled) {
+      setNotificationsEnabled(false);
+      return;
+    }
+    void requestNotificationPermission().then((granted) => {
+      if (granted) {
+        setNotificationsEnabled(true);
+      } else {
+        Alert.alert(
+          t('settings.notifications.deniedTitle'),
+          t('settings.notifications.deniedMessage'),
+        );
+      }
+    });
+  };
 
   const runRestore = (): void => {
     setBusy(true);
@@ -197,6 +219,47 @@ export default function SettingsScreen() {
               />
             </>
           )}
+        </Section>
+
+        <Section title={t('settings.notifications.title')}>
+          <View style={styles.switchRow}>
+            <View style={styles.switchTexts}>
+              <Text style={[styles.rowLabel, { color: colors.text }]}>
+                {t('settings.notifications.toggle')}
+              </Text>
+              <Text style={[styles.hint, { color: colors.textMuted }]}>
+                {t('settings.notifications.hint')}
+              </Text>
+            </View>
+            <Switch
+              accessibilityLabel={t('settings.notifications.toggle')}
+              value={notificationsEnabled}
+              onValueChange={toggleNotifications}
+              trackColor={{ true: colors.primary, false: colors.border }}
+            />
+          </View>
+          {notificationsEnabled ? (
+            <View style={styles.languageRow}>
+              {REMINDER_HOURS.map((hour) => {
+                const active = reminderHour === hour;
+                return (
+                  <Pressable
+                    key={hour}
+                    accessibilityRole="button"
+                    onPress={() => setReminderHour(hour)}
+                    style={[
+                      styles.languageChip,
+                      { backgroundColor: active ? colors.primary : colors.surfaceAlt },
+                    ]}
+                  >
+                    <Text style={{ color: active ? colors.onPrimary : colors.text }}>
+                      {t('settings.notifications.hourChip', { hour })}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          ) : null}
         </Section>
 
         <Section title={t('settings.privacy.title')}>
