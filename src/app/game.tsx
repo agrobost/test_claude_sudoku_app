@@ -1,11 +1,12 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Redirect, useRouter } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppState, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppButton } from '@/components/AppButton';
+import { computeStreaks, DailyResult } from '@/features/daily';
 import {
   Board,
   GameClock,
@@ -14,7 +15,9 @@ import {
   NumberPad,
   useGameStore,
 } from '@/features/game';
+import { useHistoryStore, wonOnTimeDates } from '@/features/history';
 import { usePuzzlesStore } from '@/features/puzzles';
+import { todayLocalDate } from '@/lib/dates';
 import { fontSize, spacing, useThemeColors } from '@/theme/tokens';
 
 export default function GameScreen() {
@@ -28,6 +31,7 @@ export default function GameScreen() {
   const resumeTimer = useGameStore((s) => s.resumeTimer);
   const clearGame = useGameStore((s) => s.clearGame);
   const takePuzzle = usePuzzlesStore((s) => s.takePuzzle);
+  const records = useHistoryStore((s) => s.records);
 
   // passage en arrière-plan = chrono en pause
   useEffect(() => {
@@ -38,6 +42,15 @@ export default function GameScreen() {
     });
     return () => subscription.remove();
   }, []);
+
+  // streak affichée sur la victoire d'un daily : historique + la victoire en cours
+  const dailyStreak = useMemo(() => {
+    if (game === null || game.status !== 'won' || game.mode !== 'daily') return 0;
+    const today = todayLocalDate();
+    const dates = new Set(wonOnTimeDates(records));
+    if (game.dailyDate === today) dates.add(today);
+    return computeStreaks(dates, today).current;
+  }, [game, records]);
 
   if (game === null) {
     return <Redirect href="/" />;
@@ -113,6 +126,15 @@ export default function GameScreen() {
       <GameOverOverlay
         onNewGame={won && game.mode === 'daily' ? null : handleNewGameFromOverlay}
         onExit={handleExitToHome}
+        dailyResultSlot={
+          won && game.mode === 'daily' && game.dailyDate !== null ? (
+            <DailyResult
+              date={game.dailyDate}
+              durationMs={game.elapsedMs}
+              currentStreak={dailyStreak}
+            />
+          ) : undefined
+        }
       />
     </SafeAreaView>
   );

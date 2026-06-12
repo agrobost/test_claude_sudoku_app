@@ -39,6 +39,15 @@ export function formatClock(ms: number): string {
   return hours > 0 ? `${hours}:${mm}:${ss}` : `${mm}:${ss}`;
 }
 
+/** « 12 juin » / "June 12" — pour les partages et titres. */
+export function formatHumanDate(date: LocalDate, locale: string): string {
+  return new Date(`${date}T12:00:00Z`).toLocaleDateString(locale, {
+    day: 'numeric',
+    month: 'long',
+    timeZone: 'UTC',
+  });
+}
+
 /** Horodatage courant (ms) — centralisé pour rester mockable en test. */
 export function nowMs(): number {
   return Date.now();

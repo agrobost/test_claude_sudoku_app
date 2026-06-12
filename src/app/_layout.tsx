@@ -5,6 +5,8 @@ import { useEffect } from 'react';
 
 import '@/lib/i18n';
 import { ensureAnonymousSession } from '@/features/auth';
+import { prefetchUpcomingDailies } from '@/features/daily';
+import { initGameRecorder } from '@/features/history';
 import { useThemeColors } from '@/theme/tokens';
 
 const queryClient = new QueryClient({
@@ -21,7 +23,9 @@ export default function RootLayout() {
   const colors = useThemeColors();
 
   useEffect(() => {
-    void ensureAnonymousSession();
+    const unsubscribeRecorder = initGameRecorder();
+    void ensureAnonymousSession().then(() => prefetchUpcomingDailies());
+    return unsubscribeRecorder;
   }, []);
 
   return (

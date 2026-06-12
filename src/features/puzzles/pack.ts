@@ -13,7 +13,7 @@ function isDifficulty(value: unknown): value is Difficulty {
   return value === 'easy' || value === 'medium' || value === 'hard' || value === 'expert';
 }
 
-function isPackPuzzle(value: unknown): value is PackPuzzle {
+export function isPackPuzzle(value: unknown): value is PackPuzzle {
   if (typeof value !== 'object' || value === null) return false;
   const record: Record<string, unknown> = { ...value };
   return (
