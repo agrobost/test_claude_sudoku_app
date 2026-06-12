@@ -20,8 +20,10 @@ import { useHistoryStore, wonOnTimeDates } from '@/features/history';
 import {
   AdBanner,
   HintButton,
+  iapConfigured,
   maybeShowInterstitialAfterGame,
   ReviveButton,
+  useMonetizationStore,
 } from '@/features/monetization';
 import { usePuzzlesStore } from '@/features/puzzles';
 import { todayLocalDate } from '@/lib/dates';
@@ -40,6 +42,7 @@ export default function GameScreen() {
   const takePuzzle = usePuzzlesStore((s) => s.takePuzzle);
   const records = useHistoryStore((s) => s.records);
   const hint = useGameStore((s) => s.hint);
+  const noAds = useMonetizationStore((s) => s.noAds);
 
   // passage en arrière-plan = chrono en pause
   useEffect(() => {
@@ -148,6 +151,15 @@ export default function GameScreen() {
         onNewGame={won && game.mode === 'daily' ? null : handleNewGameFromOverlay}
         onExit={handleExitToHome}
         reviveSlot={<ReviveButton />}
+        footerSlot={
+          !noAds && iapConfigured() ? (
+            <AppButton
+              label={t('paywall.entryLink')}
+              variant="ghost"
+              onPress={() => router.push('/paywall')}
+            />
+          ) : undefined
+        }
         dailyResultSlot={
           won && game.mode === 'daily' && game.dailyDate !== null ? (
             <DailyResult

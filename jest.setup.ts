@@ -73,6 +73,18 @@ jest.mock('react-native-applovin-max', () => {
   };
 });
 
+jest.mock('react-native-purchases', () => ({
+  __esModule: true,
+  default: {
+    configure: jest.fn(),
+    addCustomerInfoUpdateListener: jest.fn(),
+    logIn: jest.fn(async () => ({ customerInfo: { entitlements: { active: {} } } })),
+    getOfferings: jest.fn(async () => ({ current: null })),
+    purchasePackage: jest.fn(async () => ({ customerInfo: { entitlements: { active: {} } } })),
+    restorePurchases: jest.fn(async () => ({ entitlements: { active: {} } })),
+  },
+}));
+
 jest.mock('expo-tracking-transparency', () => ({
   PermissionStatus: { GRANTED: 'granted', DENIED: 'denied', UNDETERMINED: 'undetermined' },
   requestTrackingPermissionsAsync: jest.fn(async () => ({ status: 'denied' })),

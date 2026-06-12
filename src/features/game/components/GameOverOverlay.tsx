@@ -13,12 +13,14 @@ type Props = {
   dailyResultSlot?: React.ReactNode;
   /** Slot pour le bouton « continuer » rewarded (E14). */
   reviveSlot?: React.ReactNode;
+  /** Slot bas de carte (lien « Supprimer les pubs », E15). */
+  footerSlot?: React.ReactNode;
   /** null = pas de relance proposée (ex. : daily gagné). */
   onNewGame: (() => void) | null;
   onExit: () => void;
 };
 
-export function GameOverOverlay({ dailyResultSlot, reviveSlot, onNewGame, onExit }: Props) {
+export function GameOverOverlay({ dailyResultSlot, reviveSlot, footerSlot, onNewGame, onExit }: Props) {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const game = useGameStore((s) => s.game);
@@ -56,6 +58,7 @@ export function GameOverOverlay({ dailyResultSlot, reviveSlot, onNewGame, onExit
             />
           ) : null}
           <AppButton label={t('game.over.backHome')} variant="ghost" onPress={onExit} />
+          {footerSlot}
         </View>
       </View>
     </View>

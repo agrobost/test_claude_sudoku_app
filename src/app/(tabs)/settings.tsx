@@ -17,6 +17,7 @@ import {
 import { setAnalyticsConsent, useConsentStore } from '@/features/consent';
 import { useGameStore } from '@/features/game';
 import { useHistoryStore } from '@/features/history';
+import { restorePurchases, useMonetizationStore } from '@/features/monetization';
 import { usePuzzlesStore } from '@/features/puzzles';
 import { useSettingsStore, type LanguageOverride } from '@/features/settings';
 import { pullServerHistory, writeOutbox } from '@/features/sync';
@@ -31,7 +32,20 @@ export default function SettingsScreen() {
   const languageOverride = useSettingsStore((s) => s.languageOverride);
   const setLanguageOverride = useSettingsStore((s) => s.setLanguageOverride);
   const analyticsConsent = useConsentStore((s) => s.analyticsConsent);
+  const noAds = useMonetizationStore((s) => s.noAds);
   const [busy, setBusy] = useState(false);
+
+  const runRestore = (): void => {
+    setBusy(true);
+    void restorePurchases().then((result) => {
+      setBusy(false);
+      if (result.ok) {
+        Alert.alert(t('paywall.restoredTitle'), t('paywall.thanksMessage'));
+      } else {
+        Alert.alert(t('paywall.restoreFailedTitle'), t('paywall.restoreFailedMessage'));
+      }
+    });
+  };
 
   const purgeLocalData = (): void => {
     useGameStore.getState().clearGame();
@@ -161,6 +175,28 @@ export default function SettingsScreen() {
               );
             })}
           </View>
+        </Section>
+
+        <Section title={t('settings.premium.title')}>
+          {noAds ? (
+            <Text style={[styles.hint, { color: colors.text }]}>
+              {t('settings.premium.active')}
+            </Text>
+          ) : (
+            <>
+              <Row
+                icon="movie-off-outline"
+                label={t('settings.premium.buy')}
+                onPress={() => router.push('/paywall')}
+              />
+              <Row
+                icon="backup-restore"
+                label={t('settings.premium.restore')}
+                onPress={runRestore}
+                disabled={busy}
+              />
+            </>
+          )}
         </Section>
 
         <Section title={t('settings.privacy.title')}>

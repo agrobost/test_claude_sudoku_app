@@ -1,6 +1,7 @@
 import { onGameRecorded } from '../history';
 
 import { initAds } from './ads';
+import { initIap } from './iap';
 import { useMonetizationStore } from './store';
 
 export { adsReady, initAds, maybeShowInterstitialAfterGame, showRewardedAd } from './ads';
@@ -25,11 +26,21 @@ export {
   MIN_GAMES_BEFORE_INTERSTITIAL,
   MIN_INTERSTITIAL_INTERVAL_MS,
 } from './gates';
+export {
+  getNoAdsPackage,
+  iapConfigured,
+  initIap,
+  NO_ADS_ENTITLEMENT,
+  purchaseNoAds,
+  restorePurchases,
+  type IapActionResult,
+} from './iap';
 export { useMonetizationStore } from './store';
 
-/** Boot : initialise la pub (no-op sans clés) et compte les fins de partie. */
+/** Boot : initialise pub + IAP (no-op sans clés) et compte les fins de partie. */
 export function initMonetization(): void {
   void initAds();
+  void initIap();
   onGameRecorded(() => {
     useMonetizationStore.getState().incrementGamesFinished();
   });
