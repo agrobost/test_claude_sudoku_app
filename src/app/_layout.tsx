@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
 import { ensureAnonymousSession } from '@/features/auth';
+import { initConsent } from '@/features/consent';
 import { prefetchUpcomingDailies } from '@/features/daily';
 import { initGameRecorder } from '@/features/history';
 import { useSettingsStore } from '@/features/settings';
@@ -31,6 +32,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     const unsubscribeRecorder = initGameRecorder();
+    initConsent();
     let unsubscribeSync: (() => void) | null = null;
     void ensureAnonymousSession().then(() => {
       unsubscribeSync = initSync();

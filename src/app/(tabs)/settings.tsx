@@ -4,7 +4,7 @@ import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
@@ -14,6 +14,7 @@ import {
   useSession,
   type LinkProvider,
 } from '@/features/auth';
+import { setAnalyticsConsent, useConsentStore } from '@/features/consent';
 import { useGameStore } from '@/features/game';
 import { useHistoryStore } from '@/features/history';
 import { usePuzzlesStore } from '@/features/puzzles';
@@ -29,6 +30,7 @@ export default function SettingsScreen() {
   const session = useSession();
   const languageOverride = useSettingsStore((s) => s.languageOverride);
   const setLanguageOverride = useSettingsStore((s) => s.setLanguageOverride);
+  const analyticsConsent = useConsentStore((s) => s.analyticsConsent);
   const [busy, setBusy] = useState(false);
 
   const purgeLocalData = (): void => {
@@ -161,6 +163,25 @@ export default function SettingsScreen() {
           </View>
         </Section>
 
+        <Section title={t('settings.privacy.title')}>
+          <View style={styles.switchRow}>
+            <View style={styles.switchTexts}>
+              <Text style={[styles.rowLabel, { color: colors.text }]}>
+                {t('settings.privacy.analytics')}
+              </Text>
+              <Text style={[styles.hint, { color: colors.textMuted }]}>
+                {t('settings.privacy.analyticsHint')}
+              </Text>
+            </View>
+            <Switch
+              accessibilityLabel={t('settings.privacy.analytics')}
+              value={analyticsConsent}
+              onValueChange={setAnalyticsConsent}
+              trackColor={{ true: colors.primary, false: colors.border }}
+            />
+          </View>
+        </Section>
+
         <Section title={t('settings.about.title')}>
           <Row
             icon="shield-lock-outline"
@@ -272,6 +293,15 @@ const styles = StyleSheet.create({
   languageRow: {
     flexDirection: 'row',
     gap: spacing.sm,
+  },
+  switchRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  switchTexts: {
+    flex: 1,
+    gap: 2,
   },
   languageChip: {
     borderRadius: 999,

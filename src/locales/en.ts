@@ -74,6 +74,12 @@ export const en: typeof fr = {
       title: 'Language',
       system: 'System',
     },
+    privacy: {
+      title: 'Privacy',
+      analytics: 'Usage statistics and crash reports',
+      analyticsHint:
+        'Helps us improve the app (Firebase Analytics / Crashlytics). Off by default.',
+    },
     about: {
       title: 'About',
       privacy: 'Privacy',

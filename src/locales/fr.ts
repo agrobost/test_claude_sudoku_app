@@ -71,6 +71,12 @@ export const fr = {
       title: 'Langue',
       system: 'Système',
     },
+    privacy: {
+      title: 'Confidentialité',
+      analytics: 'Statistiques d’usage et rapports de plantage',
+      analyticsHint:
+        'Nous aide à améliorer l’app (Firebase Analytics / Crashlytics). Désactivé par défaut.',
+    },
     about: {
       title: 'À propos',
       privacy: 'Confidentialité',

@@ -49,3 +49,7 @@ yarn-error.*
 # supabase local
 supabase/.temp/
 supabase/.branches/
+
+# configs Firebase (récupérées depuis la console, propres à chaque env)
+firebase/*.json
+firebase/*.plist

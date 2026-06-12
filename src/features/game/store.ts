@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { parseGrid, type CellRef, type Difficulty, type Digit, type Grid } from '@/engine';
+import { trackEvent } from '@/lib/analytics';
 import { nowMs } from '@/lib/dates';
 import { zustandStorage } from '@/lib/mmkv';
 
@@ -96,6 +97,7 @@ export const useGameStore = create<GameStore>()(
         game: null,
 
         startGame: (puzzle, mode, dailyDate) => {
+          trackEvent({ name: 'game_start', params: { mode, difficulty: puzzle.difficulty } });
           set({
             game: {
               gameId: randomUUID(),
