@@ -74,7 +74,11 @@ export function HintButton() {
       ]}
     >
       <MaterialCommunityIcons name="lightbulb-on-outline" size={22} color={colors.warning} />
-      <Text style={[styles.label, { color: colors.textMuted }]}>
+      <Text
+        allowFontScaling={false}
+        numberOfLines={1}
+        style={[styles.label, { color: colors.textMuted }]}
+      >
         {t('hints.button')} · {remaining}
       </Text>
     </Pressable>
@@ -85,12 +89,16 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     borderRadius: 10,
+    flexBasis: 0,
     flexDirection: 'row',
-    gap: 6,
-    paddingHorizontal: spacing.md,
+    flexGrow: 1,
+    gap: 4,
+    justifyContent: 'center',
+    paddingHorizontal: spacing.xs,
     paddingVertical: spacing.sm,
   },
   label: {
+    flexShrink: 1,
     fontSize: fontSize.caption,
     fontWeight: '600',
   },

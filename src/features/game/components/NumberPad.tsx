@@ -32,7 +32,11 @@ function ActionButton({ icon, label, active = false, onPress }: ActionProps) {
         size={22}
         color={active ? colors.onPrimary : colors.text}
       />
-      <Text style={[styles.actionLabel, { color: active ? colors.onPrimary : colors.textMuted }]}>
+      <Text
+        allowFontScaling={false}
+        numberOfLines={1}
+        style={[styles.actionLabel, { color: active ? colors.onPrimary : colors.textMuted }]}
+      >
         {label}
       </Text>
     </Pressable>
@@ -120,18 +124,21 @@ const styles = StyleSheet.create({
   },
   actionsRow: {
     flexDirection: 'row',
-    gap: spacing.sm,
-    justifyContent: 'center',
+    gap: 6,
   },
   action: {
     alignItems: 'center',
     borderRadius: 10,
+    flexBasis: 0,
     flexDirection: 'row',
-    gap: 6,
-    paddingHorizontal: spacing.md,
+    flexGrow: 1,
+    gap: 4,
+    justifyContent: 'center',
+    paddingHorizontal: spacing.xs,
     paddingVertical: spacing.sm,
   },
   actionLabel: {
+    flexShrink: 1,
     fontSize: fontSize.caption,
     fontWeight: '600',
   },

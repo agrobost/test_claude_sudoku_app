@@ -85,9 +85,8 @@ function CellComponent({
                 styles.note,
                 {
                   color: colors.noteText,
-                  fontSize: Math.max(8, size * 0.22),
-                  width: size / 3 - 1,
-                  height: size / 3 - 1,
+                  fontSize: Math.max(8, size * 0.2),
+                  lineHeight: size / 3,
                 },
               ]}
             >
@@ -113,10 +112,14 @@ const styles = StyleSheet.create({
   notesGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
   },
   note: {
+    width: '33.333%',
+    height: '33.333%',
     textAlign: 'center',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
   },
 });
