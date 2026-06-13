@@ -52,6 +52,11 @@ function CellComponent({
 
   const row = Math.floor(cell / 9);
   const col = cell % 9;
+  // bordures internes dessinées par les cellules elles-mêmes (dans le flux flex,
+  // donc parfaitement alignées) : épaisses aux frontières de bloc, fines sinon ;
+  // le bord extérieur (col/row === 8) est porté par le cadre du plateau.
+  const boxRight = col % 3 === 2 && col !== 8;
+  const boxBottom = row % 3 === 2 && row !== 8;
 
   return (
     <Pressable
@@ -62,9 +67,10 @@ function CellComponent({
         {
           flex: 1,
           backgroundColor: background,
-          borderColor: colors.boardLine,
-          borderRightWidth: col === 8 ? 0 : col % 3 === 2 ? 0 : StyleSheet.hairlineWidth,
-          borderBottomWidth: row === 8 ? 0 : row % 3 === 2 ? 0 : StyleSheet.hairlineWidth,
+          borderRightColor: boxRight ? colors.boardLineBold : colors.boardLine,
+          borderBottomColor: boxBottom ? colors.boardLineBold : colors.boardLine,
+          borderRightWidth: col === 8 ? 0 : boxRight ? 2 : StyleSheet.hairlineWidth,
+          borderBottomWidth: row === 8 ? 0 : boxBottom ? 2 : StyleSheet.hairlineWidth,
         },
       ]}
     >

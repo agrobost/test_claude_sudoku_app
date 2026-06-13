@@ -66,38 +66,6 @@ export function Board({ hintCells }: Props) {
           })}
         </View>
       ))}
-      {[1, 2].map((i) => (
-        <View
-          key={`v${i}`}
-          pointerEvents="none"
-          style={[
-            styles.separator,
-            {
-              backgroundColor: colors.boardLineBold,
-              left: (boardSize / 3) * i - 1,
-              top: 0,
-              width: 2,
-              height: boardSize,
-            },
-          ]}
-        />
-      ))}
-      {[1, 2].map((i) => (
-        <View
-          key={`h${i}`}
-          pointerEvents="none"
-          style={[
-            styles.separator,
-            {
-              backgroundColor: colors.boardLineBold,
-              top: (boardSize / 3) * i - 1,
-              left: 0,
-              height: 2,
-              width: boardSize,
-            },
-          ]}
-        />
-      ))}
     </View>
   );
 }
@@ -113,8 +81,5 @@ const styles = StyleSheet.create({
   row: {
     flex: 1,
     flexDirection: 'row',
-  },
-  separator: {
-    position: 'absolute',
   },
 });
